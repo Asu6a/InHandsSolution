@@ -1,417 +1,176 @@
-/* JS Document */
+	(function($) {
+	"use strict"
 
-/******************************
-
-[Table of Contents]
-
-1. Vars and Inits
-2. Set Header
-3. Init Menu
-4. Init Main Slider
-5. Init Double Arrow
-6. Init Search Form
-7. Init Hamburger
-8. Init Vertical Slider
-9. Init Services Slider
-10. Init Parallax
-11. Init Scrolling
-
-
-******************************/
-
-$(document).ready(function()
-{
-	"use strict";
-
-	/* 
-
-	1. Vars and Inits
-
-	*/
-
-	var searchActive = false;
-	var menuActive = false;
-	var header = $('.header');
-	var ctrl = new ScrollMagic.Controller();
-
-	setHeader();
-
-	$(window).on('resize', function()
-	{
-		setHeader();
+// Page Preloader
+	$(window).load(function() {
+		$(".loader").delay(300).fadeOut();
+		$(".animationload").delay(600).fadeOut("slow");
 	});
+	
+// Header Effect
+	$(".header").affix({
+		offset: {
+			top: 100, 
+			bottom: function () {
+			return (this.bottom = $('.copyright').outerHeight(true))
+			}
+		}
+	})
+		
+// Smooth Scroll
+	smoothScroll.init({
+		speed: 1000, // Integer. How fast to complete the scroll in milliseconds
+		easing: 'easeInOutCubic', // Easing pattern to use
+		updateURL: false, // Boolean. Whether or not to update the URL with the anchor hash on scroll
+		offset: 1, // Integer. How far to offset the scrolling anchor location in pixels
+		callbackBefore: function ( toggle, anchor ) {}, // Function to run before scrolling
+		callbackAfter: function ( toggle, anchor ) {} // Function to run after scrolling
+	});	
 
-	$(document).on('scroll', function()
-	{
-		setHeader();
+// Parallax
+	$(window).bind('load', function() {
+		parallaxInit();
 	});
-
-	initMainSlider();
-	initDoubleArrow();
-	initSearchForm();
-	initHamburger();
-	initVSlider();
-	initServicesSlider();
-	initParallax();
-	initScrolling();
-
-	/* 
-
-	2. Set Header
-
-	*/
-
-	function setHeader()
-	{
-		if(window.innerWidth < 992)
-		{
-			if($(window).scrollTop() > 100)
-			{
-				header.addClass('scrolled');
-			}
-			else
-			{
-				header.removeClass('scrolled');
-			}
-		}
-		else
-		{
-			if($(window).scrollTop() > 100)
-			{
-				header.addClass('scrolled');
-			}
-			else
-			{
-				header.removeClass('scrolled');
-			}
-		}
-		if(window.innerWidth > 991 && menuActive)
-		{
-			closeMenu();
-		}
+	
+	function parallaxInit() {
+		$('#skills_parallax').parallax("30%", 0.1);
+		$('#count_parallax').parallax("30%", 0.1);
+		$('#video_parallax').parallax("30%", 0.1);
+		$('#featured_parallax').parallax("90%", 0.1);
 	}
-
-	/* 
-
-	4. Init Main Slider
-
-	*/
-
-	function initMainSlider()
-	{
-		if($('.hero_slider').length)
-		{
-			var heroSlider = $('.hero_slider');
-			heroSlider.owlCarousel(
-			{
-				items: 1,
-				loop: true,
-				autoplay:false,
-				animateOut: 'slideOutDown',
-				animateIn: 'flipInX',
-				dots:false,
-				nav:false,
-				autoplayTimeout:5000,
-				autoplaySpeed:800,
-				smartSpeed:800
-			});
-
-			if($('.hero_slider_prev').length)
-			{
-				var prev = $('.hero_slider_prev');
-
-				prev.on('click', function()
-				{
-					heroSlider.trigger('prev.owl.carousel');
-				});
-			}
-
-			if($('.hero_slider_next').length)
-			{
-				var prev = $('.hero_slider_next');
-
-				prev.on('click', function()
-				{
-					heroSlider.trigger('next.owl.carousel');
-				});
-			}
+	
+// Skills
+	$('.chart').easyPieChart({
+		easing: 'easeOutBounce',
+		size : 175,
+		animate : 2000,
+		lineCap : 'square',
+		lineWidth : 10,
+		barColor : false,
+		trackColor : '#F7C221',
+		scaleColor : false,
+		onStep: function(from, to, percent) {
+		$(this.el).find('.percent').text(Math.round(percent)+'%');
 		}
-	}
+	});
+	
+// Carousel
+    $(document).ready(function() {
+    var owl = $("#testimonial");
+    owl.owlCarousel({
+    items : 1, //10 items above 1000px browser width
+    itemsDesktop : [1000,1], //5 items between 1000px and 901px
+    itemsDesktopSmall : [900,1], // betweem 900px and 601px
+    itemsTablet: [600,1], //2 items between 600 and 0
+	navigation : false,
+	pagination : false,
+    itemsMobile : false // itemsMobile disabled - inherit from itemsTablet option
+    });
+     
+    // Custom Navigation Events
+    $(".next").click(function(){
+    owl.trigger('owl.next');
+    })
+    $(".prev").click(function(){
+    owl.trigger('owl.prev');
+    })
+    });
+	
+	
+	$("#owl-testimonial-widget, #owl-blog").owlCarousel({
+		items : 1,
+		lazyLoad : true,
+		navigation : true,
+		pagination : false,
+		autoPlay: false
+    });
 
-	function initDoubleArrow()
-	{
-		if($('.double_arrow').length)
-		{
-			$('.double_arrow').on('click', function()
-			{
+// Home Intro
+	$("#owl-intro").owlCarousel({
+    items : 1, //10 items above 1000px browser width
+    itemsDesktop : [1000,1], //5 items between 1000px and 901px
+    itemsDesktopSmall : [900,1], // betweem 900px and 601px
+    itemsTablet: [600,1], //2 items between 600 and 0
+		navigation : false,
+		slideSpeed : 300,
+		paginationSpeed : 400,
+		singleItem:true,
+		pagination : false,
+	});
+	
+// Coun
+	function count($this){
+        var current = parseInt($this.html(), 10);
+        current = current + 1; /* Where 50 is increment */    
+        $this.html(++current);
+            if(current > $this.data('count')){
+                $this.html($this.data('count'));
+            } else {    
+                setTimeout(function(){count($this)}, 50);
+            }
+        }            
+        $(".stat-count").each(function() {
+          $(this).data('count', parseInt($(this).html(), 10));
+          $(this).html('0');
+          count($(this));
+        });
+		
+		
+	
 
-			});
-		}
-	}
+	
+// TOOLTIP
+    $('.social-icons, .bs-example-tooltips').tooltip({
+      selector: "[data-toggle=tooltip]",
+      container: "body"
+    })
+	
 
-	function initSearchForm()
-	{
-		if($('.search_form').length)
-		{
-			var searchForm = $('.search_form');
-			var searchInput = $('.search_input');
-			var searchButton = $('.search_button');
-
-			searchButton.on('click', function(event)
-			{
-				event.stopPropagation();
-
-				if(!searchActive)
-				{
-					searchForm.addClass('active');
-					searchActive = true;
-					searchInput.focus();
-
-					$(document).one('click', function closeForm(e)
-					{
-						if($(e.target).hasClass('search_input'))
-						{
-							$(document).one('click', closeForm);
-						}
-						else
-						{
-							searchForm.removeClass('active');
-							searchActive = false;
-						}
-					});
-				}
-				else
-				{
-					searchForm.removeClass('active');
-					searchActive = false;
-				}
-			});	
-		}
-	}
-
-	/* 
-
-	7. Init Hamburger
-
-	*/
-
-	function initHamburger()
-	{
-		if($('.hamburger_container').length)
-		{
-			var hamb = $('.hamburger_container');
-
-			hamb.on('click', function(event)
-			{
-				event.stopPropagation();
-
-				if(!menuActive)
-				{
-					openMenu();
-					
-					$(document).one('click', function cls(e)
-					{
-						if($(e.target).hasClass('menu_mm'))
-						{
-							$(document).one('click', cls);
-						}
-						else
-						{
-							closeMenu();
-						}
-					});
-				}
-				else
-				{
-					$('.menu_container').removeClass('active');
-					menuActive = false;
-				}
-			});
-		}
-	}
-
-	function openMenu()
-	{
-		$('.menu_container').addClass('active');
-		menuActive = true;
-	}
-
-	function closeMenu()
-	{
-		$('.menu_container').removeClass('active');
-		menuActive = false;
-	}
-
-	/* 
-
-	8. Init Vertical Slider
-
-	*/
-
-	function initVSlider()
-	{
-		if($('.v_slider').length)
-		{
-			var vSlider = $('.v_slider');
-
-			vSlider.slick(
-			{
-				infinite: false,
-				vertical: true,
-				arrows: false,
-				draggable: false,
-				dots: true,
-				responsive:
-				[
-					{
-						breakpoint: 575,
-						settings: 
-						{
-							draggable: true,
-							vertical: false,
-							dots: false
-						}
-					}
-				]
-			});
-		}
-	}
-
-	/* 
-
-	9. Init Services Slider
-
-	*/
-
-	function initServicesSlider()
-	{
-		if($('.services_slider').length)
-		{
-			var servicesSlider = $('.services_slider');
-
-			servicesSlider.owlCarousel(
-			{
-				loop: true,
-				center: true,
-				margin: 67,
-				stagePadding: 153,
-				mouseDrag: true,
-				dots: true,
-				dotsSpeed: 600,
-				responsive:
-				{
-					0:
-					{
-						items:1,
-						margin: 15,
-						center: false,
-						stagePadding: 15,
-						dots: false
-					},
-					575:
-					{
-						items:3,
-						center: true,
-						stagePadding: 350
-					},
-					1440:
-					{
-						items:4,
-						margin: 67,
-						stagePadding: 153,
-						dots: true,
-					}
-				}
-			});
-
-			// Handle Left Nav Arrow
-			if($('.services_slider_nav_left').length)
-			{
-				$('.services_slider_nav_left').on('click', function()
-				{
-					servicesSlider.trigger('prev.owl.carousel');
-				});
-			}
-
-			// Handle Right Nav Arrow
-			if($('.services_slider_nav_right').length)
-			{
-				$('.services_slider_nav_right').on('click', function()
-				{
-					servicesSlider.trigger('next.owl.carousel');
-				});
-			}
-		}
-	}
-
-	/* 
-
-	10. Init Parallax
-
-	*/
-
-	function initParallax()
-	{
-		// Add parallax effect to home slider
-		if($('.slider_prlx').length)
-		{
-			var homeBcg = $('.slider_prlx');
-
-			var homeBcgScene = new ScrollMagic.Scene({
-		        triggerElement: homeBcg,
-		        triggerHook: 1,
-		        duration: "100%"
-		    })
-		    .setTween(TweenMax.to(homeBcg, 1, {y: '15%', ease:Power0.easeNone}))
-		    .addTo(ctrl);
-		}
-
-		// Add parallax effect to every element with class prlx
-		// Add class prlx_parent to the parent of the element
-		if($('.prlx_parent').length && $('.prlx').length)
-		{
-			var elements = $('.prlx_parent');
-
-			elements.each(function()
-			{
-				var ele = this;
-				var bcg = $(ele).find('.prlx');
-
-				var slideParallaxScene = new ScrollMagic.Scene({
-			        triggerElement: ele,
-			        triggerHook: 1,
-			        duration: "200%"
-			    })
-			    .setTween(TweenMax.from(bcg, 1, {y: '-30%', ease:Power0.easeNone}))
-			    .addTo(ctrl);
-			});
-		}
-	}
-
-	/*
-
-	11. Init Scrolling
-
-	*/
-
-	function initScrolling()
-    {
-    	if($('.nav_links').length)
-    	{
-    		
-			/* Clicking on any element with class .nav_links scrolls down to the element set in the data-scroll-to value */
+		
+// Google Map
+	var locations = [
+		['<div class="infobox"><h3 class="title"><a href="#contact">OUR USA OFFICE</a></h3><span>NEW YORK CITY 2045 / 65</span><br>+90 555 666 77 88</p></div></div></div>', -37.801578, 145.060508, 2]
+		];
+	
+		var map = new google.maps.Map(document.getElementById('map'), {
 			
-    		var links = $('.nav_links');
-	    	links.each(function()
-	    	{
-	    		var ele = $(this);
-	    		var target = ele.data('scroll-to');
-	    		ele.on('click', function(e)
-	    		{
-	    			e.preventDefault();
-	    			$(window).scrollTo(target, 1500, {offset: -80, easing: 'easeInOutQuart'});
-	    		});
-	    	});
-    	}	
-    }
-});
+		  zoom: 10,
+			scrollwheel: false,
+			navigationControl: true,
+			mapTypeControl: false,
+			scaleControl: false,
+			draggable: false,
+			styles: [ { "stylers": [ { "hue": "#27e0ff" },  {saturation: 100},
+                {gamma: 1} ] } ],
+			center: new google.maps.LatLng(-37.801578, 145.060508),
+		  mapTypeId: google.maps.MapTypeId.ROADMAP
+		});
+	
+		var infowindow = new google.maps.InfoWindow();
+	
+		var marker, i;
+	
+		for (i = 0; i < locations.length; i++) {  
+	  
+			marker = new google.maps.Marker({ 
+			position: new google.maps.LatLng(locations[i][1], locations[i][2]), 
+			map: map ,
+			icon: 'images/marker.png'
+			});
+	
+	
+		  google.maps.event.addListener(marker, 'click', (function(marker, i) {
+			return function() {
+			  infowindow.setContent(locations[i][0]);
+			  infowindow.open(map, marker);
+			  
+			}
+		  })(marker, i));
+		}
+		
+		 $("a[href='#tab2']").on('shown.bs.tab', function(){
+  		google.maps.event.trigger(map, 'resize');
+		});
+		  
+			
+	})(jQuery);	
